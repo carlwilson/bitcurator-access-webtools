@@ -92,9 +92,11 @@ sudo apt-get install -y redis-server
 sudo apt-get install -y python python-dev libatlas-base-dev gcc gfortran g++
 
 # Install scipy
-sudo pip install scipy
+# pip installs currently cause errors - back to apt-get
+# sudo pip install scipy
+# sudo pip install numpy
+sudo apt-get install -y python-scipy
 
-sudo pip install numpy
 sudo pip install pandas
 sudo pip install redis
 sudo pip install tornado
@@ -115,6 +117,8 @@ sudo pip install coverage
 sudo pip install websocket-client
 
 # Install blaze for future stuff
+# See https://groups.google.com/a/continuum.io/forum/#!topic/bokeh/vM8erulLZ7o
+# for alternate packaging that actually works
 sudo pip install blaze
 
 # Now install some additional deps and bokeh itself (npm and node)

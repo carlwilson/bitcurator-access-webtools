@@ -14,6 +14,8 @@ SCRIPT_PATH=$(dirname $(readlink -f $0 ) )
 ##
 
 # Start the bokeh server (needed for live graphing)
+# See http://bokeh.pydata.org/en/latest/docs/user_guide/server.html#userguide-server
+# for details on running in existing Flask app
 # bokeh-server --backend=redis
 
 # Start the Flask server / app

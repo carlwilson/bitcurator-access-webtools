@@ -20,8 +20,14 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       run: "always"
 
 
-    # Port forward HTTP (80) to host 2020
+    # Port forward HTTP (80) to host 8080
     config.vm.network :forwarded_port, :host => 8080, :guest => 5000
+
+    # Port forward for Bokeh standalone
+    config.vm.network :forwarded_port, :host => 8081, :guest => 5006
+
+    # Port forward for Bokeh in Flask test
+    config.vm.network :forwarded_port, :host => 5050, :guest => 5006
 
     config.vm.provider :virtualbox do |vb|
       vb.name = "bca-webtools"
