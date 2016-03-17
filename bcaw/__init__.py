@@ -46,8 +46,8 @@ app.config["MAIL_PASSWORD"] = 'your-password'
  
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://vagrant:vagrant@localhost/bca_db'
  
-from bcaw_userlogin_db import db_login
-db_login.init_app(app)
+from bcaw_userlogin_db import bcadb
+bcadb.init_app(app)
 import bcaw.image_browse
 
 ''' Under construction
