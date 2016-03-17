@@ -15,11 +15,12 @@
 
 from flask import Flask, render_template, url_for, Response
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.login import LoginManager, UserMixin
 from bcaw_default_settings import *
-from bcaw_userlogin_db import db_login
+from bcaw_userlogin_db import bcadb
 import psycopg2
 import image_browse
-###from runserver import db_login
+###from runserver import bcadb
 from celery import Celery
 
 
@@ -321,7 +322,7 @@ def dbBuildTableForImage(img, bld_imgdb = False, bld_dfxmldb = False):
     else:
         logging.debug('>> Table for image %s does not exist', img)
         # print ">> Table for image {} does not exist: ".format(img)
-        db_login.create_all()
+        bcadb.create_all()
         table_added += 1
 
     if bld_imgdb:
@@ -382,20 +383,20 @@ def dbBuildTableForImage(img, bld_imgdb = False, bld_dfxmldb = False):
         retstr = "Table entries exist for the image " + img 
         return(0, retstr)
 
-class BcawImages(db_login.Model):
+class BcawImages(bcadb.Model):
     __tablename__ = 'bcaw_images'
-    image_index = db_login.Column(db_login.Integer, primary_key=True)
-    image_name = db_login.Column(db_login.String(60) )
-    acq_date = db_login.Column(db_login.String(80))
-    sys_date = db_login.Column(db_login.String(80))
-    os = db_login.Column(db_login.String(255))
-    file_format = db_login.Column(db_login.String(100))
-    media_type = db_login.Column(db_login.String(100))
-    is_physical = db_login.Column(db_login.String(10))
-    bps = db_login.Column(db_login.Integer)
-    media_size = db_login.Column(db_login.String(100))
-    md5 = db_login.Column(db_login.String(255))
-    indexed = db_login.Column(db_login.Integer)
+    image_index = bcadb.Column(bcadb.Integer, primary_key=True)
+    image_name = bcadb.Column(bcadb.String(60) )
+    acq_date = bcadb.Column(bcadb.String(80))
+    sys_date = bcadb.Column(bcadb.String(80))
+    os = bcadb.Column(bcadb.String(255))
+    file_format = bcadb.Column(bcadb.String(100))
+    media_type = bcadb.Column(bcadb.String(100))
+    is_physical = bcadb.Column(bcadb.String(10))
+    bps = bcadb.Column(bcadb.Integer)
+    media_size = bcadb.Column(bcadb.String(100))
+    md5 = bcadb.Column(bcadb.String(255))
+    indexed = bcadb.Column(bcadb.Integer)
 
 
     def __init__(self, image_name = None, acq_date = None, sys_date = None,
@@ -413,34 +414,34 @@ bps = None, media_size = None, md5 = None, indexed = None):
         self.md5 = md5
         self.indeded = indexed
 
-class BcawDfxmlInfo(db_login.Model):
+class BcawDfxmlInfo(bcadb.Model):
     __tablename__ = 'bcaw_dfxmlinfo'
-    image_index = db_login.Column(db_login.Integer, primary_key=True)
-    image_name = db_login.Column(db_login.String(60))
-    partition_offset = db_login.Column(db_login.BigInteger)
-    sector_size = db_login.Column(db_login.Integer)
-    block_size = db_login.Column(db_login.Integer)
-    ftype = db_login.Column(db_login.Integer)
-    ftype_str = db_login.Column(db_login.String(80))
-    block_count = db_login.Column(db_login.Integer)
-    first_block = db_login.Column(db_login.Integer)
-    last_block = db_login.Column(db_login.Integer)
-    fo_parent_inode = db_login.Column(db_login.Integer)
-    fo_filename = db_login.Column(db_login.String(255))
-    fo_partition = db_login.Column(db_login.Integer)
-    fo_id = db_login.Column(db_login.Integer)
-    fo_name_type = db_login.Column(db_login.String(1))
-    fo_filesize = db_login.Column(db_login.Integer)
-    fo_alloc = db_login.Column(db_login.Integer)
-    fo_used = db_login.Column(db_login.Integer)
-    fo_inode = db_login.Column(db_login.Integer)
-    fo_meta_type = db_login.Column(db_login.Integer)
-    fo_mode = db_login.Column(db_login.Integer)
-    fo_nlink = db_login.Column(db_login.Integer)
-    fo_uid = db_login.Column(db_login.BigInteger)
-    fo_gid = db_login.Column(db_login.Integer)
-    fo_mtime = db_login.Column(db_login.String(100))
-    ####search_vector = db_login.Column(TSVectorType('image_name', 'fo_filename'))
+    image_index = bcadb.Column(bcadb.Integer, primary_key=True)
+    image_name = bcadb.Column(bcadb.String(60))
+    partition_offset = bcadb.Column(bcadb.BigInteger)
+    sector_size = bcadb.Column(bcadb.Integer)
+    block_size = bcadb.Column(bcadb.Integer)
+    ftype = bcadb.Column(bcadb.Integer)
+    ftype_str = bcadb.Column(bcadb.String(80))
+    block_count = bcadb.Column(bcadb.Integer)
+    first_block = bcadb.Column(bcadb.Integer)
+    last_block = bcadb.Column(bcadb.Integer)
+    fo_parent_inode = bcadb.Column(bcadb.Integer)
+    fo_filename = bcadb.Column(bcadb.String(255))
+    fo_partition = bcadb.Column(bcadb.Integer)
+    fo_id = bcadb.Column(bcadb.Integer)
+    fo_name_type = bcadb.Column(bcadb.String(1))
+    fo_filesize = bcadb.Column(bcadb.Integer)
+    fo_alloc = bcadb.Column(bcadb.Integer)
+    fo_used = bcadb.Column(bcadb.Integer)
+    fo_inode = bcadb.Column(bcadb.Integer)
+    fo_meta_type = bcadb.Column(bcadb.Integer)
+    fo_mode = bcadb.Column(bcadb.Integer)
+    fo_nlink = bcadb.Column(bcadb.Integer)
+    fo_uid = bcadb.Column(bcadb.BigInteger)
+    fo_gid = bcadb.Column(bcadb.Integer)
+    fo_mtime = bcadb.Column(bcadb.String(100))
+    ####search_vector = bcadb.Column(TSVectorType('image_name', 'fo_filename'))
 
     def __init__(self, image_name = None, partition_offset = None,
 sector_size = None, block_size = None, ftype = None, ftype_str = None,
@@ -476,7 +477,7 @@ fo_nlink = None, fo_uid = None, fo_gid = None, fo_mtime = None):
 
 
 def bcawDbSessionAdd(dbrec):
-    db_login.session.add(BcawImages(image_name=dbrec['image_name'],
+    bcadb.session.add(BcawImages(image_name=dbrec['image_name'],
                          acq_date=dbrec['acq_date'],
                          sys_date=dbrec['sys_date'],
                          os=dbrec['os'], file_format=dbrec['file_format'],
@@ -486,14 +487,14 @@ def bcawDbSessionAdd(dbrec):
                          media_size = dbrec['media_size'],
                          md5 = dbrec['md5'],
                          indexed = dbrec['indexed'])) 
-    db_login.session.commit()
+    bcadb.session.commit()
 
 def bcawSetIndexForImageInDb(img, value):
     """ This routine uses the Psycopyg2 package to execute the "update" psql 
         command to set the index flag in the imageinfo table in the DB.  
     """
     #indx = BcawImages(image_name=img) 
-    #db_login.session.add(indx)
+    #bcadb.session.add(indx)
     # since 'indexed' in the table is set to integer, we do the following.
     # FIXME: Change it to string so we can use "yes" and "no" 
     if value == True:
@@ -533,7 +534,7 @@ def bcawDbGetIndexFlagForImage(img):
 
 def bcawDfxmlDbSessionAdd(d_dbrec):
     try:
-        db_login.session.add(BcawDfxmlInfo(image_name=d_dbrec['image_name'],
+        bcadb.session.add(BcawDfxmlInfo(image_name=d_dbrec['image_name'],
                    partition_offset=d_dbrec['partition_offset'],
                    ##sector_size=d_dbrec['sector_size'],
                    block_size=d_dbrec['block_size'],
@@ -562,17 +563,17 @@ def bcawDfxmlDbSessionAdd(d_dbrec):
     except:
         logging.debug('>> Exception while adding the record ', d_dbrec)
         # print ">> Exception while adding the record: ", d_dbrec
-    db_login.session.commit()
+    bcadb.session.commit()
 
     
 def dbinit(): 
-    #db_login.init_app(app)
-    db_login.create_all()
+    #bcadb.init_app(app)
+    bcadb.create_all()
     '''
     with app.app_context():
         print(">>> Creating tables ")
-        #db_login.drop_all() ## FIXME: TEMP
-        db_login.create_all()
+        #bcadb.drop_all() ## FIXME: TEMP
+        bcadb.create_all()
     '''
 
 def bcawdb():
@@ -712,7 +713,7 @@ def dbu_create_table_if_doesntexist(table_name):
         c.execute(exec_cmd)
     except:
         # Table doesn't exist. so create.
-        db_login.create_all()
+        bcadb.create_all()
 
 def dbu_does_table_exist_for_img(image_name, table):
     """ DB utility function to check if a table entry for the given image
