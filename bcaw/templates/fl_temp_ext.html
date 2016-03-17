@@ -33,7 +33,80 @@
             <!--position: absolute;-->
         }
 
+        .mainmenu_items {
+            display:block;
+            clear:both;
+            position:relative; left: 500px; align=right;
+        }
+
+        /*----- Menu Outline -----*/
+        .menu a {
+            transition:all linear 0.15s;
+            font-size:16px;
+            color:#919191;
+        }
+
+        .menu li:hover > a, .menu .current-item > a {
+            text-decoration:none;
+            color:#be5b70;
+        }
+
+        /*----- Top Level -----*/
+        .menu > ul > li {
+            float:left;
+            display:inline-block;
+            position:relative;
+            font-size:19px;
+        }
+
+        .menu > ul > li > a {
+            padding:10px 40px;
+            display:inline-block;
+            text-shadow:0px 1px 0px rgba(0,0,0,0.4);
+        }
+
+        /* The following makes the black background upon hovering over text */
+        .menu > ul > li:hover > a, .menu > ul > .current-item > a {
+            background:#2e2728;
+        }
+
+        /*----- Bottom Level - sub-menu on hovering over the main menu -----*/
+        .menu li:hover .sub-menu {
+            z-index:1;
+            opacity:1;
+        }
+
+        .sub-menu {
+            width:160%;
+            padding:5px 0px;
+            position:absolute;
+            top:100%;
+            left:0px;
+            z-index:-1;
+            opacity:0;
+            transition:opacity linear 0.15s;
+            box-shadow:0px 2px 3px rgba(0,0,0,0.2);
+            background:#2e2728;
+        }
+
+        .sub-menu li {
+            display:block;
+            font-size:16px;
+        }
+
+        /*
+        .sub-menu li a {
+            padding:10px 30px;
+            display:block;
+        }
+
+        .sub-menu li a:hover, .sub-menu .current-item a {
+            background:#3e3436;
+        }
+        */
+
     </style>
+    <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Ek+Mukta">
 {% endblock %}
 {% block content %}
 
@@ -47,26 +120,35 @@
       </div>
     </div>    
 
-      {# <!--<h3 align="left">BCA Webtools</h3>-->
-      <!--<div id="btext">BCA Webtools</div>-->
-      <!--<img src="{{ url_for('static', filename ='bc2-icon.png') }}" height="72" width="72" align="center" >--> #}
   </div>
 
-  <div id="nav">
-    <ul>
-      <li><a href="{{ url_for('home') }}">Home</a></td></li>
+  <nav class="menu">
+      <ul class="mainmenu_items">
+          <li><a href="{{ url_for('home') }}">Home</a></li>
+          <li>
+          {% if current_user.is_authenticated %}
+              Hi, {{ current_user.nickname }}!
+              <a href="{{ url_for('logout') }}">Logout</a>
+          {% else %}
+
+              <a href="#">Login <span class="arrow">&#9660;</span></a>
+              <ul class="sub-menu">
+                <li><a href="{{ url_for('oauth_authorize', provider='facebook') }}">Login Using Facebook</a></li>
+                {# <li><a href="{{ url_for('oauth_authorize', provider='twitter') }}">Login Using Twitter</a></li> #}
+              </ul>
+          {% endif %}
+      </ul>
+  </nav>
 
       {#
       <!-- Sign in/up currently disabled -->
-      <!-- <li><a href=signin>{{ user }}</a></li> -->
-      <!-- {% if signup_out in "Sign Up" %} -->
-      <!--  <li><a href=signup>Sign Up</a></li> -->
-      <!-- {% elif signup_out in "Sign Out" %} -->
-      <!--  <li><a href=signout>Sign Out</a></li> -->
-      <!-- {% endif %} --> #}
-
-    </ul>
-  </div>
+      <li><a href=signin>{{ user }}</a></li>
+      {% if signup_out in "Sign Up" %}
+      <li><a href=signup>Sign Up</a></li>
+      {% elif signup_out in "Sign Out" %}
+      <li><a href=signout>Sign Out</a></li>
+      {% endif %}
+      #}
 
   <div id="main">
 
