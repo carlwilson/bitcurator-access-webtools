@@ -16,7 +16,7 @@
 from bcaw import app
 from flask.ext.wtf import Form 
 from wtforms import TextField, TextAreaField, SubmitField, validators, ValidationError, PasswordField, RadioField
-from bcaw_userlogin_db import User, db_login
+from bcaw_userlogin_db import User, bcadb
 import bcaw_db
 import bcaw_index
 import lucene
