@@ -31,13 +31,16 @@ from bcaw import app
 import bcaw_db
 import bcaw_index
 from sqlalchemy import *
-from bcaw_userlogin_db import db_login, User, dbinit
-###from runserver import db_login
+from bcaw_userlogin_db import bcadb, User, dbinit
+###from runserver import bcadb
 from werkzeug.routing import BaseConverter
 
 import subprocess
 from subprocess import Popen,PIPE
 from flask import send_from_directory
+from flask.ext.login import LoginManager, UserMixin, login_user, logout_user,\
+    current_user
+from bcaw_userlogin_db import OAuthSignIn
 
 # Set up logging location for anyone importing these utils
 logging.basicConfig(filename='/var/log/bcaw.log', level=logging.DEBUG)
@@ -182,6 +185,20 @@ indexDir = app.config['INDEX_DIR']
 # CELERY stuff
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
 celery.conf.update(app.config)
+
+# oAuth stuff
+# NOTE: The facebok info is from my personal account. Twitter info is fake
+# These need to be replaced by the BCA related accounts.
+app.config['OAUTH_CREDENTIALS'] = {
+    'facebook': {
+        'id': '955758511174871',
+        'secret': '9f3672a6f029827bc6ce76ee680376ac'
+    },
+    'twitter': {
+        'id': '13RzWQclolxWZIMq5LJqzRZPTl',
+        'secret': '1m9TEd58DSEtRrZHpz2EjrV9AhsBRxKMo8m3kuIZj3zLwzwIimt'
+    }
+}
 
 num_images = 0
 image_db_list = []
@@ -651,7 +668,7 @@ def file_clicked(image_name, image_partition, filepath):
 @app.route('/testdb')
 def testdb():
     '''
-    if db_login.session.query("1").from_statement("SELECT 1").all():
+    if bcadb.session.query("1").from_statement("SELECT 1").all():
         return 'It works.'
     else:
         return 'Something is broken.'
@@ -671,8 +688,8 @@ def signup():
             return render_template('fl_signup.html', form=form)
         else:
             newuser = User(form.firstname.data, form.lastname.data, form.email.data, form.password.data)
-            db_login.session.add(newuser)
-            db_login.session.commit()
+            bcadb.session.add(newuser)
+            bcadb.session.commit()
 
             session['email'] = newuser.email
 
@@ -722,15 +739,18 @@ def home():
     global num_images
     num_images = len(image_list)
 
+    '''
     user = "Sign In"
     signup_out = "Sign Up"
     if 'email' in session:
       user = session['email']
       signup_out = "Sign Out"
+    '''
 
     qform = QueryForm()
 
-    return render_template('fl_temp_ext.html', image_list=image_list, np=dm.num_partitions, image_db_list=image_db_list, user=user, signup_out = signup_out, form=qform)
+    #return render_template('fl_temp_ext.html', image_list=image_list, np=dm.num_partitions, image_db_list=image_db_list, user=user, signup_out = signup_out, form=qform)
+    return render_template('fl_temp_ext.html', image_list=image_list, np=dm.num_partitions, image_db_list=image_db_list, form=qform)
 
 @app.route('/about')
 def about():
@@ -920,7 +940,7 @@ def query():
     engine = create_engine('postgresql://vagrant:vagrant@localhost/bca_db')
 
     #Base.metadata.create_all(engine)
-    db_login.Model.metadata.create_all(engine)
+    bcadb.Model.metadata.create_all(engine)
 
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -938,7 +958,7 @@ def query():
 
     print query.first()
 
-    ####query = db_login.session.query()
+    ####query = bcadb.session.query()
     ####query = search(query, 'Email')
 
     #print("query.first.fo_filename : ", query.first().fo_filename)
@@ -1583,6 +1603,38 @@ def admin():
     # Check if user has the permission to do admin services
     return render_template('fl_profile.html')   # FIXME: Placeholder
 '''    
+
+@app.route('/authorize/<provider>')
+def oauth_authorize(provider):
+    # print "D: In authorize: current_user: ", current_user, current_user.is_anonymous
+    if not current_user.is_anonymous:
+        return redirect(url_for('home'))
+    oauth = OAuthSignIn.get_provider(provider)
+    return oauth.authorize()
+
+@app.route('/logout')
+def logout():
+    # print "D: Logging Out User ", current_user
+    logout_user()
+    return redirect(url_for('home'))
+
+@app.route('/callback/<provider>/')
+def oauth_callback(provider):
+    if not current_user.is_anonymous:
+        return redirect(url_for('home'))
+
+    oauth = OAuthSignIn.get_provider(provider)
+    social_id, username, email = oauth.callback()
+    if social_id is None:
+        flash('Authentication failed.')
+        return redirect(url_for('home'))
+    user = User.query.filter_by(social_id=social_id).first()
+    if not user:
+        user = User(social_id=social_id, nickname=username, email=email)
+        bcadb.session.add(user)
+        bcadb.session.commit()
+    login_user(user, True)
+    return redirect(url_for('home'))
 
 @app.route('/status/')
 def bcawCheckAllTaskStatus():
