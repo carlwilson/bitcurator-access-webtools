@@ -292,7 +292,9 @@ Flask-SQLAlchemy
 flask-wtf 
 celery
 nltk
-numpy"
+numpy
+Flask-Login
+rauth"
 
     pip_pre_packages="bitstring"
 
