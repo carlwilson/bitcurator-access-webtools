@@ -7,13 +7,10 @@ VAGRANTFILE_API_VERSION = "2"
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     # Uncomment this to use 14.04LTS
-    config.vm.box = "ubuntu/trusty64"
+    # config.vm.box = "ubuntu/trusty64"
 
     # Uncomment this to use 16.04LTS
-    # config.vm.box = "bento/ubuntu-16.04"
-
-    # Optional "official" cloud xenial box (currently broken):
-    #config.vm.box = "https://cloud-images.ubuntu.com/xenial/current/xenial-server-cloudimg-amd64-vagrant.box"
+    config.vm.box = "bento/ubuntu-16.04"
 
     # Set the box host-name
     # config.vm.hostname = "ubuntu-xenial"

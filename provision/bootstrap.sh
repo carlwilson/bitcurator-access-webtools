@@ -530,79 +530,49 @@ install_source_packages() {
   # Install pylucene (also installs JCC)
   echoinfo "bitcurator-access-webtools: Building and installing pylucene"
   echoinfo "[CURRENTLY DISABLED IN BOOTSTRAP]"
-#  echoinfo " -- This may take several minutes..."
-#        cd /tmp
-#        wget http://apache.claz.org/lucene/pylucene/pylucene-6.2.0-src.tar.gz >> $LOG_BASE/bca-install.log 2>&1
-#        tar -zxvf pylucene-6.2.0-src.tar.gz >> $LOG_BASE/bca-install.log 2>&1
-#        cd pylucene-6.2.0
-#        export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
-#        export JCC_JDK=/usr/lib/jvm/java-8-openjdk-amd64
-#
-#        pushd jcc >> $LOG_BASE/bca-install.log 2>&1
-#
-#        # Must manually tweak setup.py for JCC with openjdk8 - JCC build will fail
-#        # without this!
-#        sed -i "s/java-8-oracle/java-8-openjdk-amd64/g" setup.py
-#
-#        python setup.py build >> $LOG_BASE/bca-install.log 2>&1
-#        python setup.py install >> $LOG_BASE/bca-install.log 2>&1
-#        popd >> $LOG_BASE/bca-install.log 2>&1
-#
-#        # Edit the Makefile to uncomment the config info for Linux.
-#        # First we look for the requred string in the makefile and copy the 5 lines
-#        # strting from the 4th line after the pattern match, into a temp file (temp),
-#        # after removing the leading hash (to uncomment the lines).
-#
-#        # Then we fix some paths for the virtualenv.
-#
-#        # Then we append these lines from temp file to Makefile after the given pattern
-#        # is found.
-#        grep -A 8 "Debian Jessie 64-bit" Makefile | sed -n '4,8p' | sed 's/^#//' > temp
-#        #sed -i "s/PREFIX_PYTHON=\/usr/PREFIX_PYTHON=\/var\/www\/bcaw\/venv/g" temp
-#        sed -i "s/PREFIX_PYTHON=\/opt\/apache\/pylucene\/_install/PREFIX_PYTHON=\/var\/www\/bcaw\/venv/g" temp
-#        sed -i "s/ANT=JAVA_HOME=\/usr\/lib\/jvm\/java-8-oracle/ANT=JAVA_HOME=\/usr\/lib\/jvm\/java-8-openjdk-amd64/g" temp
-#        sed -i -e '/Debian Jessie 64-bit/r temp' Makefile
-#
-#        # Finally, remove the shared flag for the time being. See
-#        # http://lucene.apache.org/pylucene/jcc/install.html for why the shared
-#        # flag is used. Setuptools in 14.04LTS is not properly patched for this right now.
-#        sed -i "s/JCC=\$(PYTHON)\ -m\ jcc\ --shared/JCC=\$(PYTHON)\ -m\ jcc/g" Makefile
-#
-#        make >> $LOG_BASE/bca-install.log 2>&1
-#        sudo make install |& sudo tee -a $LOG_BASE/bca-install.log
-#        sudo ldconfig
-#        # Clean up
-#        # rm -rf /tmp/pylucene-6.2.0*
-
-        # ******* START: Previous instructions for pylucene 4.10.1-1 *******
-
-        #wget http://apache.mirrors.pair.com/lucene/pylucene/pylucene-4.10.1-1-src.tar.gz >> $LOG_BASE/bca-install.log 2>&1
-        #tar -zxvf pylucene-4.10.1-1-src.tar.gz >> $LOG_BASE/bca-install.log 2>&1
-        #cd pylucene-4.10.1-1
-        #pushd jcc >> $LOG_BASE/bca-install.log 2>&1
-        #python setup.py build >> $LOG_BASE/bca-install.log 2>&1
-        #python setup.py install >> $LOG_BASE/bca-install.log 2>&1
-        #popd >> $LOG_BASE/bca-install.log 2>&1
-
-        # Edit the Makefile to uncomment the config info for Linux.
-        # First we look for the requred string in the makefile and copy the 5 lines
-        # strting from the 4th line after the pattern match, into a temp file (temp),
-        # after removing the leading hash (to uncomment the lines).
-
-        # Then we fix some paths for the virtualenv.
-
-        # Then we append these lines from temp file to Makefile after the given pattern
-        # is found.
-        #grep -A 8 "Ubuntu 11.10 64-bit" Makefile | sed -n '4,8p' | sed 's/^#//' > temp
-        #sed -i "s/PREFIX_PYTHON=\/usr/PREFIX_PYTHON=\/var\/www\/bcaw\/venv/g" temp
-        #sed -i -e '/Ubuntu 11.10 64-bit/r temp' Makefile
-        #make >> $LOG_BASE/bca-install.log 2>&1
-        #sudo make install >> $LOG_BASE/bca-install.log 2>&1
-        #sudo ldconfig
-        ## Clean up
-        #rm -rf /tmp/pylucene-4.10.1.-1*
-
-        # ******* END: Previous instructions for pylucene 4.10.1-1 *******
+  #  echoinfo " -- This may take several minutes..."
+  #        cd /tmp
+  #        wget http://apache.claz.org/lucene/pylucene/pylucene-6.2.0-src.tar.gz >> $LOG_BASE/bca-install.log 2>&1
+  #        tar -zxvf pylucene-6.2.0-src.tar.gz >> $LOG_BASE/bca-install.log 2>&1
+  #        cd pylucene-6.2.0
+  #        export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+  #        export JCC_JDK=/usr/lib/jvm/java-8-openjdk-amd64
+  #
+  #        pushd jcc >> $LOG_BASE/bca-install.log 2>&1
+  #
+  #        # Must manually tweak setup.py for JCC with openjdk8 - JCC build will fail
+  #        # without this!
+  #        sed -i "s/java-8-oracle/java-8-openjdk-amd64/g" setup.py
+  #
+  #        python setup.py build >> $LOG_BASE/bca-install.log 2>&1
+  #        python setup.py install >> $LOG_BASE/bca-install.log 2>&1
+  #        popd >> $LOG_BASE/bca-install.log 2>&1
+  #
+  #        # Edit the Makefile to uncomment the config info for Linux.
+  #        # First we look for the requred string in the makefile and copy the 5 lines
+  #        # strting from the 4th line after the pattern match, into a temp file (temp),
+  #        # after removing the leading hash (to uncomment the lines).
+  #
+  #        # Then we fix some paths for the virtualenv.
+  #
+  #        # Then we append these lines from temp file to Makefile after the given pattern
+  #        # is found.
+  #        grep -A 8 "Debian Jessie 64-bit" Makefile | sed -n '4,8p' | sed 's/^#//' > temp
+  #        #sed -i "s/PREFIX_PYTHON=\/usr/PREFIX_PYTHON=\/var\/www\/bcaw\/venv/g" temp
+  #        sed -i "s/PREFIX_PYTHON=\/opt\/apache\/pylucene\/_install/PREFIX_PYTHON=\/var\/www\/bcaw\/venv/g" temp
+  #        sed -i "s/ANT=JAVA_HOME=\/usr\/lib\/jvm\/java-8-oracle/ANT=JAVA_HOME=\/usr\/lib\/jvm\/java-8-openjdk-amd64/g" temp
+  #        sed -i -e '/Debian Jessie 64-bit/r temp' Makefile
+  #
+  #        # Finally, remove the shared flag for the time being. See
+  #        # http://lucene.apache.org/pylucene/jcc/install.html for why the shared
+  #        # flag is used. Setuptools in 14.04LTS is not properly patched for this right now.
+  #        sed -i "s/JCC=\$(PYTHON)\ -m\ jcc\ --shared/JCC=\$(PYTHON)\ -m\ jcc/g" Makefile
+  #
+  #        make >> $LOG_BASE/bca-install.log 2>&1
+  #        sudo make install |& sudo tee -a $LOG_BASE/bca-install.log
+  #        sudo ldconfig
+  #        # Clean up
+  #        # rm -rf /tmp/pylucene-6.2.0*
 
   # Checking postgres setup
   echoinfo "bitcurator-access-webtools: Checking postgres setup"
@@ -663,7 +633,6 @@ install_source_packages() {
         # Now clean up
         rm -rf /tmp/libewf-20140608
 
-
   # Install libqcow (needed for pytsk)
   echoinfo "bitcurator-access-webtools: Building and installing libqcow..."
         cd /tmp
@@ -678,33 +647,40 @@ install_source_packages() {
   # Install The Sleuth Kit
   echoinfo "bitcurator-access-webtools: Building and installing The Sleuth Kit..."
         cd /tmp
-        wget https://github.com/sleuthkit/sleuthkit/archive/sleuthkit-4.2.0.tar.gz -O sleuthkit-4.2.0.tar.gz >> $LOG_BASE/bca-install.log 2>&1
-        tar zxvf sleuthkit-4.2.0.tar.gz >> $LOG_BASE/bca-install.log 2>&1
-        cd sleuthkit-sleuthkit-4.2.0
-        ./bootstrap >> $LOG_BASE/bca-install.log 2>&1
+        wget https://github.com/sleuthkit/sleuthkit/releases/download/sleuthkit-4.3.0/sleuthkit-4.3.0.tar.gz >> $LOG_BASE/bca-install.log 2>&1
+        tar zxvf sleuthkit-4.3.0.tar.gz >> $LOG_BASE/bca-install.log 2>&1
+        cd sleuthkit-4.3.0
+        #./bootstrap >> $LOG_BASE/bca-install.log 2>&1
         ./configure >> $LOG_BASE/bca-install.log 2>&1
         make >> $LOG_BASE/bca-install.log 2>&1
         sudo make install |& sudo tee -a $LOG_BASE/bca-install.log
         sudo ldconfig
         # Clean up
-        rm /tmp/sleuthkit-4.2.0.tar.gz
-        rm -rf /tmp/sleuthkit-sleuthkit-4.2.0
+        rm /tmp/sleuthkit-4.3.0.tar.gz
+        rm -rf /tmp/sleuthkit-4.3.0
 
   # Install TSK Python bindings
   echoinfo "bitcurator-access-webtools: Building and installing pytsk..."
+
+        # Previous
+        #cd /tmp
+        #wget -q https://github.com/py4n6/pytsk/releases/download/20150406/pytsk-20150406.tgz
+        #tar zxvf pytsk-20150406.tgz >> $LOG_BASE/bca-install.log 2>&1
+        #cd pytsk
+        #"$BCAW_ROOT/venv/bin/python" setup.py build >> $LOG_BASE/bca-install.log 2>&1
+        #"$BCAW_ROOT/venv/bin/python" setup.py install >> $LOG_BASE/bca-install.log 2>&1
+        ## Clean up
+        #rm -rf /tmp/pytsk
+
+        # Most recent (needed in 16.04 / TSK 4.3.0):
         cd /tmp
-        #git clone https://github.com/py4n6/pytsk >> $LOG_BASE/bca-install.log 2>&1
-        wget -q https://github.com/py4n6/pytsk/releases/download/20150406/pytsk-20150406.tgz
-        tar zxvf pytsk-20150406.tgz >> $LOG_BASE/bca-install.log 2>&1
-        cd pytsk
-        #python setup.py build >> $LOG_BASE/bca-install.log 2>&1
+        wget -q https://github.com/py4n6/pytsk/releases/download/20161109/pytsk3-20161109.tar.gz
+        tar zxvf pytsk3-20161109.tar.gz >> $LOG_BASE/bca-install.log 2>&1
+        cd pytsk3-20161109
         "$BCAW_ROOT/venv/bin/python" setup.py build >> $LOG_BASE/bca-install.log 2>&1
-        #python setup.py build >> $LOG_BASE/bca-install.log 2>&1
-        #sudo python setup.py install >> $LOG_BASE/bca-install.log 2>&1
-        # Modified for use in virtualenv
         "$BCAW_ROOT/venv/bin/python" setup.py install >> $LOG_BASE/bca-install.log 2>&1
-        # Clean up
         rm -rf /tmp/pytsk
+
 }
 
 create_virtualenv() {
@@ -729,6 +705,7 @@ copy_source() {
 
   cp -f "$SOURCE_ROOT/"*.py "$BCAW_ROOT"
   cp -fr "$BCAW_SOURCE" "$BCAW_ROOT"
+  cp -f "$SOURCE_ROOT/"*.service /etc/systemd/system
   chown www-data:www-data "$BCAW_ROOT/"*.py
   chown -R www-data:www-data "$BCAW_TARGET"
 }
@@ -773,6 +750,10 @@ configure_webstack() {
    rm /etc/nginx/sites-enabled/default
    cp /vagrant/nginx_config /etc/nginx/sites-available/
    ln -s /etc/nginx/sites-available/nginx_config /etc/nginx/sites-enabled
+
+   # Start and enable bcaw
+   systemctl start bcaw
+   systemctl enable bcaw
 
    # Start UWSGI and NGINX
    if [ $VER == "14.04" ]; then
